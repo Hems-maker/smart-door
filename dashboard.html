@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Door Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="light-mode">
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner" class="spinner-overlay">
+    <div class="spinner"></div>
+    <p>Loading data...</p>
+  </div>
+
+  <header>
+    <h1>SMART DOOR ACCESS CONTROL</h1>
+    <p>Real-time RFID Monitoring & Control</p>
+  </header>
+
+  <!-- Summary -->
+  <section class="summary">
+    <div class="card stat">
+      <h3>Total Registered</h3>
+      <p id="totalRegistered">0</p>
+    </div>
+    <div class="card stat">
+      <h3>Unregistered Attempts</h3>
+      <p id="totalUnregistered">0</p>
+    </div>
+    <div class="card stat">
+      <h3>Lock Status</h3>
+      <div id="statusBox" class="locked">LOCKED</div>
+    </div>
+  </section>
+
+  <!-- Dashboard Columns -->
+  <section class="dashboard-columns">
+    <!-- Registered Cards -->
+    <div class="card">
+      <h2>Registered Cards</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Card UID</th>
+            <th>Name</th>
+            <th class="action-column">Action</th>
+          </tr>
+        </thead>
+        <tbody id="registeredBody"></tbody>
+      </table>
+    </div> 
+
+    <!-- Access Logs -->
+    <div class="card">
+      <h2>Access Logs</h2>
+      <div class="log-actions">
+        <button class="clearBtn" onclick="openClearLogsModal()">Clear Logs</button>
+        <button class="deleteMultipleBtn" onclick="enableMultiSelect('access')">Select Multiple</button>
+        <button class="deleteSelectedBtn" onclick="openDeleteLogsModal()">Delete Selected</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th id="accessHeaderCheck" style="display:none">
+              <input type="checkbox" id="selectAllLogs" disabled>
+            </th>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="accessBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Unregistered Attempts -->
+    <div class="card">
+      <h2>Unregistered Attempts</h2>
+      <div class="log-actions">
+        <button class="clearBtn" onclick="openClearUnregModal()">Clear Logs</button>
+        <button class="deleteMultipleBtn" onclick="enableMultiSelect('unreg')">Select Multiple</button>
+        <button class="deleteSelectedBtn" onclick="openDeleteUnregModal()">Delete Selected</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th id="unregHeaderCheck" style="display:none">
+              <input type="checkbox" id="selectAllUnreg" disabled>
+            </th>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Card UID</th>
+            <th>Name</th>
+            <th class="action-column">Action</th>
+          </tr>
+        </thead>
+        <tbody id="rfidBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Smart Door System © 2026 | Developed by Hems</p>
+    <div class="footer-actions">
+      <button class="logoutBtn" onclick="logout()">Logout</button>
+      <button class="printBtn" onclick="printLogs()">Print Logs</button>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- Dashboard JS -->
+  <script src="dashboard.js"></script>
+
+  <!-- Popup Notification Container -->
+  <div id="popupContainer"></div>
+
+  <!-- Remove Access Modal -->
+  <div id="removeAccessModal" class="modal">
+    <div class="modal-content">
+      <h3>Remove Access</h3>
+      <p>Are you sure you want to remove access? This process cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="removeAccessOk">Yes, Remove</button>
+        <button id="removeAccessCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <h3>Register Card</h3>
+      <p id="modalMessage"></p>
+      <input class="reginp"   type="text" id="cardNameInput" placeholder="Enter name here">
+      <div class="modal-actions">
+        <button id="modalOk">OK</button>
+        <button id="modalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Logs Modals -->
+  <div id="clearLogsModal" class="modal">
+    <div class="modal-content">
+      <h3>Clear All Logs</h3>
+      <p>Are you sure you want to clear ALL logs? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="clearLogsOk">Yes, Clear</button>
+        <button id="clearLogsCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteLogsModal" class="modal">
+    <div class="modal-content">
+      <h3>Delete Selected Logs</h3>
+      <p>Are you sure you want to delete the selected logs? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="deleteLogsOk">Yes, Delete</button>
+        <button id="deleteLogsCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unregistered Attempts Modals -->
+  <div id="clearUnregModal" class="modal">
+    <div class="modal-content">
+      <h3>Clear All Unregistered Attempts</h3>
+      <p>Are you sure you want to clear ALL unregistered attempts? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="clearUnregOk">Yes, Clear</button>
+        <button id="clearUnregCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteUnregModal" class="modal">
+    <div class="modal-content">
+      <h3>Delete Selected Unregistered Attempts</h3>
+      <p>Are you sure you want to delete the selected attempts? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="deleteUnregOk">Yes, Delete</button>
+        <button id="deleteUnregCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme Toggle Switch -->
+  <label class="switch">
+    <input type="checkbox" id="themeToggle">
+    <span class="slider"></span>
+  </label>
+
+  <!-- Dark Mode Toggle Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("themeToggle");
+      toggle.addEventListener("change", () => {
+        document.body.classList.toggle("dark-mode", toggle.checked);
+        document.body.classList.toggle("light-mode", !toggle.checked);
+      });
+    });
+      </script>
+</body>
+</html>

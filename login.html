@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Door Login</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body class="light-mode">
+  <div class="login-container">
+    <h1>Smart Door Access</h1>
+    <p class="subtitle">Please sign in to continue</p>
+
+    <!-- Login Form -->
+    <div id="loginBox" class="form-box">
+      <input type="email" id="loginEmail" placeholder="Email" required><br>
+      <input type="password" id="loginPassword" placeholder="Password" required><br>
+      <button id="loginBtn" onclick="login()">Login</button>
+    </div>
+    
+
+    <!-- Options -->
+    <div class="options">
+      <button onclick="toggleForgot()">Forgot Password?</button>
+      <button onclick="toggleRegister()">Create New Account</button>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeForgotModal()">&times;</span>
+      <h3>Forgot Password</h3>
+      <form>
+        <input type="email" id="forgotEmail" placeholder="Enter your email" required><br>
+        <button type="button" id="sendResetBtn" onclick="sendResetEmail()">Send Reset Email</button>
+        <button type="button" class="modalBtn" onclick="closeForgotModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeRegisterModal()">&times;</span>
+      <h3>Register New Account</h3>
+      <form>
+        <input type="email" id="registerEmail" placeholder="Enter email" required><br>
+        <input type="password" id="registerPassword" placeholder="Enter password" required><br>
+        <button type="button" id="registerBtn" onclick="registerUser()">Register</button>
+        <button type="button" class="modalBtn" onclick="closeRegisterModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Message Modal -->
+  <div id="messageModal" class="modal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Message</h3>
+      <p id="modalText"></p>
+      <button class="modalBtn" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+<label class="switch">
+  <input type="checkbox" id="themeToggle">
+  <span class="slider"></span>
+</label>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
