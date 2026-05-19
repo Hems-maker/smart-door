@@ -142,3 +142,4 @@ toggle.addEventListener("change", () => {
     document.body.classList.add("light-mode");
   }
 });
+window.location.href = "dashboard.html";
